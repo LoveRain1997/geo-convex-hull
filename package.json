@@ -1,6 +1,6 @@
 {
   "name": "geo-convex-hull",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Calculate the convex hull for a set of latitudes and longitudes.",
   "main": "geo-convex-hull.js",
   "repository": {

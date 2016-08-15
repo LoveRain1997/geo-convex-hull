@@ -52,7 +52,7 @@ function findMostDistantPointFromBaseLine(baseLine, latLngs) {
  * @param {Array} latLngs
  * @returns {Array}
  */
-function buildConvexHull: function (baseLine, latLngs) {
+function buildConvexHull(baseLine, latLngs) {
   var convexHullBaseLines = [],
     t = findMostDistantPointFromBaseLine(baseLine, latLngs)
 
@@ -71,58 +71,56 @@ function buildConvexHull: function (baseLine, latLngs) {
   }
 }
 
-module.exports = {
-  /*
-   * Given an array of latlngs, compute a convex hull as an array
-   * of latlngs
-   *
-   * @param {Array} latLngs -> { latitude: XXXX, longitude: XXXX }
-   * @returns {Array}
-   */
-  getConvexHull: function (latLngs) {
-    // find first baseline
-    var maxLat = false,
-      minLat = false,
-      maxLng = false,
-      minLng = false,
-      maxLatPt = null,
-      minLatPt = null,
-      maxLngPt = null,
-      minLngPt = null,
-      maxPt = null,
-      minPt = null,
-      i
+/*
+ * Given an array of latlngs, compute a convex hull as an array
+ * of latlngs
+ *
+ * @param {Array} latLngs -> { latitude: XXXX, longitude: XXXX }
+ * @returns {Array}
+ */
+module.exports = function calculateConvexHull(latLngs) {
+  // find first baseline
+  var maxLat = false,
+    minLat = false,
+    maxLng = false,
+    minLng = false,
+    maxLatPt = null,
+    minLatPt = null,
+    maxLngPt = null,
+    minLngPt = null,
+    maxPt = null,
+    minPt = null,
+    i
 
-    for (i = latLngs.length - 1; i >= 0; i--) {
-      var pt = latLngs[i]
-      if (maxLat === false || pt.latitude > maxLat) {
-        maxLatPt = pt
-        maxLat = pt.latitude
-      }
-      if (minLat === false || pt.latitude < minLat) {
-        minLatPt = pt
-        minLat = pt.latitude
-      }
-      if (maxLng === false || pt.longitude > maxLng) {
-        maxLngPt = pt
-        maxLng = pt.longitude
-      }
-      if (minLng === false || pt.longitude < minLng) {
-        minLngPt = pt
-        minLng = pt.longitude
-      }
+  for (i = latLngs.length - 1; i >= 0; i--) {
+    var pt = latLngs[i]
+    if (maxLat === false || pt.latitude > maxLat) {
+      maxLatPt = pt
+      maxLat = pt.latitude
     }
-
-    if (minLat !== maxLat) {
-      minPt = minLatPt
-      maxPt = maxLatPt
-    } else {
-      minPt = minLngPt
-      maxPt = maxLngPt
+    if (minLat === false || pt.latitude < minLat) {
+      minLatPt = pt
+      minLat = pt.latitude
     }
-
-    var ch = [].concat(buildConvexHull([minPt, maxPt], latLngs),
-      buildConvexHull([maxPt, minPt], latLngs))
-    return ch
+    if (maxLng === false || pt.longitude > maxLng) {
+      maxLngPt = pt
+      maxLng = pt.longitude
+    }
+    if (minLng === false || pt.longitude < minLng) {
+      minLngPt = pt
+      minLng = pt.longitude
+    }
   }
+
+  if (minLat !== maxLat) {
+    minPt = minLatPt
+    maxPt = maxLatPt
+  } else {
+    minPt = minLngPt
+    maxPt = maxLngPt
+  }
+
+  var ch = [].concat(buildConvexHull([minPt, maxPt], latLngs),
+    buildConvexHull([maxPt, minPt], latLngs))
+  return ch
 }
